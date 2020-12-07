@@ -9,10 +9,10 @@ terraform {
   }
 
   backend "remote" {
-    organization = "REPLACE_ME"
+    organization = "mavenlink"
 
     workspaces {
-      name = "gh-actions-demo"
+      name = "ec2-dev"
     }
   }
 }

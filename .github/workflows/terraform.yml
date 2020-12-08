@@ -14,10 +14,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      # - name: Terraform Init
+      #   id: bugfix
+      #   run: rm -rf node_modules package-lock.json && npm install && npm start
+
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v1.2.1
         with:
-          # terraform_version: 0.13.0:
+          # terraform_version: 0.13.0
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format

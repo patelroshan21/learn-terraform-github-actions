@@ -7,10 +7,18 @@ on:
   pull_request:
 
 jobs:
+  job1:
+    runs-on: ubuntu-latest
+    outputs:
+      outputs: ${{ steps.step1.outputs.test }}
+    steps:
+      - id: step1
+        run: echo "::set-output name=test::hello"
   loopcheck:
+    needs: job1
     strategy:
       matrix: 
-        dirs: [ec2, vpc]
+        dirs: ["${{needs.job1.outputs.output1}}"]
     name: "Terraform"
     runs-on: ubuntu-latest
     steps:

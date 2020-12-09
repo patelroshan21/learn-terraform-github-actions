@@ -7,7 +7,10 @@ on:
   pull_request:
 
 jobs:
-  terraform:
+  loopcheck:
+    strategy:
+      matrix: 
+        dirs: [ec2, vpc]
     name: "Terraform"
     runs-on: ubuntu-latest
     steps:
@@ -23,21 +26,24 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
+        working-directory: ${{ matrix.dirs }}
 
       - name: Terraform Init
         id: init
         run: terraform init
+        working-directory: ${{ matrix.dirs }}
 
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color
+        working-directory: ${{ matrix.dirs }}
         continue-on-error: true
       
       - name: Terraform Test
         id: test
         if: github.event_name == 'pull_request'
-        run: echo "test"
+        run: echo $(pwd)
         continue-on-error: false
 
       - uses: actions/github-script@0.9.0
@@ -49,6 +55,7 @@ jobs:
           script: |
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Directory 📖\`${{ matrix.dirs }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Plan</summary>
